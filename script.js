@@ -3,7 +3,10 @@ let ctx = canvas.getContext("2d");
 let width = canvas.width;
 let height = canvas.height;
 
-
+document.querySelector("#move").addEventListener('click', () =>{
+    gameLoop()
+   
+});
 
 const BALL_SIZE = 5;
 let ballPosition = {
@@ -28,8 +31,25 @@ draw();
 function update() {
     ballPosition.x += xSpeed;
     ballPosition.y += ySpeed;
+     document.querySelector("#x").textContent = ballPosition.x
+    document.querySelector("#y").textContent = ballPosition.y
 }
 
+function checkCollision(){
+    let ball = {
+        left: ballPosition.x,
+        right:ballPosition.x + BALL_SIZE,
+        top: ballPosition.y,
+        bottom: ballPosition.y + BALL_SIZE
+    }
+
+    if(ball.left < 0 || ball.right > width){
+        xSpeed = -xSpeed;
+    }
+    if(ball.top < 0 || ball.bottom > height){
+        ySpeed = -ySpeed;
+    }
+}
 // Typical Game loop shape
 
 /**
@@ -45,8 +65,9 @@ function update() {
 function gameLoop() {
     draw();
     update();
-    
-    setTimeout(gameLoop, 30)
+    checkCollision();
+
+    // setTimeout(gameLoop, 100)
 }
 // Call this function again after a timeout 
 gameLoop();
