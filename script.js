@@ -20,6 +20,10 @@ const PADDLE_OFFSET = 10;
 let leftPaddleTop = 10;
 let rightPaddleTop = 30;
 
+document.addEventListener('mousemove', (e) => {
+    rightPaddleTop = e.y - canvas.offsetTop; // this way the value will be based on the distance of the mouse from the top of the canvas, instead of the top of the page
+})
+
 function draw() {
      // Fill the canvas with darkblue 
     ctx.fillStyle = "darkblue";
