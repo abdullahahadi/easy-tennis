@@ -3,10 +3,6 @@ let ctx = canvas.getContext("2d");
 let width = canvas.width;
 let height = canvas.height;
 
-document.querySelector("#move").addEventListener('click', () =>{
-    gameLoop()
-   
-});
 
 const BALL_SIZE = 5;
 let ballPosition = {
@@ -17,13 +13,27 @@ let ballPosition = {
 let xSpeed = 4;
 let ySpeed = 2;
 
+const PADDLE_WIDTH = 5;
+const PADDLE_HEIGHT = 20;
+const PADDLE_OFFSET = 10;
+
+let leftPaddleTop = 10;
+let rightPaddleTop = 30;
+
 function draw() {
+     // Fill the canvas with darkblue 
     ctx.fillStyle = "darkblue";
     ctx.fillRect(0, 0, width, height);
 
+    // Everything else will be white 
     ctx.fillStyle = "white";
+
+    // Draw the ball 
     ctx.fillRect(ballPosition.x, ballPosition.y, BALL_SIZE, BALL_SIZE)
 
+    // Draw the paddles 
+    ctx.fillRect(PADDLE_OFFSET, leftPaddleTop, PADDLE_WIDTH, PADDLE_HEIGHT)
+    ctx.fillRect(width - PADDLE_WIDTH - PADDLE_OFFSET,rightPaddleTop, PADDLE_WIDTH, PADDLE_HEIGHT)
 }
 
 draw();
@@ -31,10 +41,7 @@ draw();
 function update() {
     ballPosition.x += xSpeed;
     ballPosition.y += ySpeed;
-     document.querySelector("#x").textContent = ballPosition.x
-    document.querySelector("#y").textContent = ballPosition.y
 }
-
 function checkCollision(){
     let ball = {
         left: ballPosition.x,
@@ -67,7 +74,7 @@ function gameLoop() {
     update();
     checkCollision();
 
-    // setTimeout(gameLoop, 100)
+    setTimeout(gameLoop, 30)
 }
 // Call this function again after a timeout 
 gameLoop();
