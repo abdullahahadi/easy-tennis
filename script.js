@@ -115,7 +115,6 @@ function checkCollision() {
     }
 
     //  defining the four edges of the two paddles
-
     let leftPaddle = {
         left: PADDLE_OFFSET,
         right: PADDLE_OFFSET + PADDLE_WIDTH,
@@ -147,13 +146,17 @@ function checkCollision() {
         xSpeed = -Math.abs(xSpeed);
     }
 
+    // left wall hited
     if (ball.left < 0) {
         rightScore++;
         initBall();
     }
+    // right wall hited
     if (ball.right > width) {
         leftScore++;
         initBall();
+
+
     }
 
     if (rightScore > 9 || leftScore > 9) {
