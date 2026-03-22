@@ -56,64 +56,71 @@ function checkPaddleCollision(ball, paddle) {
     )
 }
 
-function checkCollision() {
-    let ball = {
-        left: ballPosition.x,
-        right: ballPosition.x + BALL_SIZE,
-        top: ballPosition.y,
-        bottom: ballPosition.y + BALL_SIZE
-    }
-
-    //  defining the four edges of the two paddles
-
-    let leftPaddle = {
-        left: PADDLE_OFFSET,
-        right: PADDLE_OFFSET + PADDLE_WIDTH,
-        top: leftPaddleTop,
-        bottom: leftPaddleTop + PADDLE_HEIGHT
-    };
-    let rightPaddle = {
-        left: width - PADDLE_WIDTH - PADDLE_OFFSET,
-        right: width - PADDLE_OFFSET,
-        top: rightPaddleTop,
-        bottom: rightPaddleTop + PADDLE_HEIGHT
-    };
-
-    if(checkPaddleCollision(ball, leftPaddle)){
-        // Left paddle collision happened
-        xSpeed = Math.abs(xSpeed)
-    }
-
-    if(checkPaddleCollision(ball, rightPaddle)){
-        // Right paddle collision happened 
-        xSpeed = -Math.abs(xSpeed); 
-    }
-
-    if (ball.left < 0 || ball.right > width) {
-        xSpeed = -xSpeed;
-    }
-    if (ball.top < 0 || ball.bottom > height) {
-        ySpeed = -ySpeed;
+function adjustAngle(distanceFromTop, distanceFromBottom) {
+    
+    if (distanceFromTop < 0) {
+        // If ball hit near top of paddle, reduce ySpeed 
+        ySpeed -= 0.5;
+    } else if (distanceFromBottom < 0) {
+        // If ball hit near bottom of paddle, increase ySpeed 
+        ySpeed += 0.5;
     }
 }
-// Typical Game loop shape
+    function checkCollision() {
+        let ball = {
+            left: ballPosition.x,
+            right: ballPosition.x + BALL_SIZE,
+            top: ballPosition.y,
+            bottom: ballPosition.y + BALL_SIZE
+        }
 
-/**
- *   1.  Clear canvas
-      2.  Draw image
-      3.  Get player input
-      4.  Update state: Meaning -> to move objects to their new positions
-      5.  Check collisions
-      6.  Wait a short time
-      7.  Repeat
- */
+        //  defining the four edges of the two paddles
 
-function gameLoop() {
-    draw();
-    update();
-    checkCollision();
+        let leftPaddle = {
+            left: PADDLE_OFFSET,
+            right: PADDLE_OFFSET + PADDLE_WIDTH,
+            top: leftPaddleTop,
+            bottom: leftPaddleTop + PADDLE_HEIGHT
+        };
+        let rightPaddle = {
+            left: width - PADDLE_WIDTH - PADDLE_OFFSET,
+            right: width - PADDLE_OFFSET,
+            top: rightPaddleTop,
+            bottom: rightPaddleTop + PADDLE_HEIGHT
+        };
 
-    setTimeout(gameLoop, 30)
-}
-// Call this function again after a timeout 
-gameLoop();
+        if (checkPaddleCollision(ball, leftPaddle)) {
+
+            // Left paddle collision happened
+            let distanceFromTop = ball.top - leftPaddle.top;
+            let distanceFromBottom = leftPaddle.bottom - ball.bottom;
+            adjustAngle(distanceFromTop, distanceFromBottom);
+            xSpeed = Math.abs(xSpeed)
+        }
+
+        if (checkPaddleCollision(ball, rightPaddle)) {
+
+            // Right paddle collision happened 
+            let distanceFromTop = ball.top - rightPaddle.top;
+            let distanceFromBottom = rightPaddle.bottom - ball.bottom;
+            adjustAngle(distanceFromTop, distanceFromBottom);
+            xSpeed = -Math.abs(xSpeed);
+        }
+
+        if (ball.left < 0 || ball.right > width) {
+            xSpeed = -xSpeed;
+        }
+        if (ball.top < 0 || ball.bottom > height) {
+            ySpeed = -ySpeed;
+        }
+    }
+    
+    function gameLoop() {
+        draw();
+        update();
+        checkCollision();
+
+        setTimeout(gameLoop, 60)
+    }
+    // Call this function again after a timeout 
+    gameLoop();
